@@ -2,7 +2,7 @@
 resource "oci_artifacts_container_repository" "container_repository_for_function" {
     # note: repository = store for all images versions of a specific container image - so it included the function name
     compartment_id = var.compartment_ocid
-    display_name = "${var.ocir_repo_name}/${var.function_name}"
+    display_name = "${local.ocir_repo_name}/${var.function_name}"
     is_immutable = false
     is_public = false
 }
@@ -40,13 +40,13 @@ resource "null_resource" "FnPush2OCIR" {
 
   # tag the container image with the proper name - based on the actual name of the function
   provisioner "local-exec" {
-    command     = "image=$(docker images | grep fake-fun | awk -F ' ' '{print $3}') ; docker tag $image ${local.ocir_docker_repository}/${local.ocir_namespace}/${var.ocir_repo_name}/${var.function_name}:0.0.1"
+    command     = "image=$(docker images | grep fake-fun | awk -F ' ' '{print $3}') ; docker tag $image ${local.ocir_docker_repository}/${local.ocir_namespace}/${local.ocir_repo_name}/${var.function_name}:0.0.1"
     working_dir = "functions/fake-fun"
   }
 
   # create a container image based on fake-fun (hello world), tagged for the designated function name 
   provisioner "local-exec" {
-    command     = "docker push ${local.ocir_docker_repository}/${local.ocir_namespace}/${var.ocir_repo_name}/${var.function_name}:0.0.1"
+    command     = "docker push ${local.ocir_docker_repository}/${local.ocir_namespace}/${local.ocir_repo_name}/${var.function_name}:0.0.1"
     working_dir = "functions/fake-fun"
   }
 
@@ -54,9 +54,9 @@ resource "null_resource" "FnPush2OCIR" {
 
 resource "oci_functions_function" "new_function" {
   depends_on     = [null_resource.FnPush2OCIR]
-  application_id = ${local.application_id}
-  display_name   = ${var.application_name}
-  image          = "${local.ocir_docker_repository}/${local.ocir_namespace}/${var.ocir_repo_name}/${var.function_name}:0.0.1"
+  application_id = "${local.application_id}"
+  display_name   = "${var.function_name}"
+  image          = "${local.ocir_docker_repository}/${local.ocir_namespace}/${local.ocir_repo_name}/${var.function_name}:0.0.1"
   memory_in_mbs  = "128"
   config = tomap({
     DUMMY_CONFIG_PARAM = "no value required"

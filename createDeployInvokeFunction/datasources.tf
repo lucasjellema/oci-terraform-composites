@@ -1,10 +1,10 @@
 data "oci_functions_applications" "function_applications" {
   compartment_id = var.compartment_ocid
-  display_name   = "${var.app_name}"
+  display_name   = "${var.application_name}"
 }
 
 locals {
-  application_id = data oci_functions_applications.function_applications[0].id
+  application_id = data.oci_functions_applications.function_applications.applications[0].id
 }
 
 
@@ -42,6 +42,10 @@ data "oci_identity_regions" "oci_regions" {
     values = [var.region]
   }
 
+}
+
+data "oci_objectstorage_namespace" "os_namespace" {
+  compartment_id = var.tenancy_ocid
 }
 
 # Randoms

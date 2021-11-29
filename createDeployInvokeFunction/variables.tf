@@ -1,6 +1,5 @@
 variable compartment_ocid { default = "define your target compartment id" }
 variable region { default = "define your target region, for example us-ashburn-1" }
-variable application_name {default = "cloudnative-2021"}
 variable tenancy_ocid {default = "define the ocid of the tenancy"}
 variable ocir_user_name { default = "define the username for the OCIR repos"}
 variable ocir_user_password {
@@ -8,12 +7,13 @@ variable ocir_user_password {
     sensitive = true
     }
 
-variable "function_name" {
-  default = "my-new-function"
+
+variable application_name {
+  default = "cloudnative-2021App"
 }
 
-variable "ocir_repo_name" {
-  default = "cloudnative-2021/functions/${var.function_name}"
+variable "function_name" {
+  default = "my-new-function"
 }
 
 variable "test_invoke_function_body"  {
@@ -22,12 +22,13 @@ variable "test_invoke_function_body"  {
 
 
 locals {
-  app_name_lower = lower(var.app_name)
+  app_name_lower = lower(var.application_name)
 }
 
 # OCIR repo name & namespace
 
 locals {
+  ocir_repo_name = "cloudnative-2021/functions/${var.function_name}"
   ocir_docker_repository = join("", [lower(lookup(data.oci_identity_regions.oci_regions.regions[0], "key")), ".ocir.io"])
   ocir_namespace         = lookup(data.oci_objectstorage_namespace.os_namespace, "namespace")
 }
