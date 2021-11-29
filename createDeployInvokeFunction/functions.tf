@@ -63,8 +63,18 @@ resource "oci_functions_function" "new_function" {
   })
 }
 
+### wait a little while before the function is ready to be invoked
+## I got the following errors without this wait introduced into the plan 
+## Error: 404-NotAuthorizedOrNotFound 
+## Error Message: Authorization failed or requested resource not found 
+##│Suggestion: Either the resource has been deleted or service Functions Invoke Function need policy to access this resource. 
+resource "time_sleep" "wait_for_function_to_be_ready" {
+  depends_on = [oci_functions_function.new_function]
+  create_duration = "10s"
+}
+
 resource "oci_functions_invoke_function" "test_invoke_new_function" {
-  depends_on     = [oci_functions_function.new_function]
+  depends_on     = [time_sleep.wait_for_function_to_be_ready]
     #Required
     function_id = oci_functions_function.new_function.id
 
