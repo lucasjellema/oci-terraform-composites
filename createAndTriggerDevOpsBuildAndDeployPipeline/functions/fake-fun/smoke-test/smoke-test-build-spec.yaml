@@ -29,6 +29,7 @@ steps:
       echo "BUILDRUN_HASH: " $BUILDRUN_HASH
       echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
       echo "imageVersion: " $imageVersion
+      echo "compartmentOCID: " $compartmentOCID
 
     onFailure:
       - type: Command
@@ -57,7 +58,6 @@ steps:
           echo "Handling Failure"
           echo "Failure successfully handled"
         timeoutInSeconds: 400
-        runAs: root
 
   - type: Command
     timeoutInSeconds: 600
@@ -65,6 +65,12 @@ steps:
     command: |
       export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
       cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
+      apps=$(oci fn application list -c $compartmentOCID)
+      appId=$(echo $apps | jq --raw-output .data[0].id)
+      funs=$(oci fn function list --application-id $appId --display-name "my-new-function")
+      funId=$(echo $funs | jq --raw-output .data[0].id)
+      echo $funId
+      oci fn function invoke --function-id $funId --file "-"  --body '{"name":"John"}'
       terraform init
       terraform apply -auto-approve 
     onFailure:
@@ -73,6 +79,5 @@ steps:
           echo "Handling Failure"
           echo "Failure successfully handled"
         timeoutInSeconds: 40
-        runAs: root
   
 outputArtifacts:
