@@ -1,0 +1,120 @@
+version: 0.1
+component: build
+timeoutInSeconds: 6000
+runAs: root
+shell: bash
+env:
+  # these are local variables to the build config
+  variables:
+     FUNCTION_DIRECTORY: "primary_source/createAndTriggerDevOpsBuildAndDeployPipeline/functions/fake-fun"
+  # # the value of a vaultVariable is the secret-id (in OCI ID format) stored in the OCI Vault service
+  # you can then access the value of that secret in your build_spec.yaml commands
+  vaultVariables:
+
+  # exportedVariables are made available to use as parameters in sucessor Build Pipeline stages
+  # For this Build to run, the Build Pipeline needs to have a BUILDRUN_HASH parameter set
+  # the imageVersion variable corresponds with a build pipeline parameter. By making this an exported variable and by explicitly setting its value in a build step, we can override the parameter value defined for the build run
+  exportedVariables:
+    - BUILDRUN_HASH
+    - imageVersion
+
+
+steps:
+  - type: Command
+    name: "Export variables"
+    timeoutInSeconds: 40
+    command: |
+      export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
+      echo "BUILDRUN_HASH: " $BUILDRUN_HASH
+      echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
+      echo "imageVersion: " $imageVersion
+      echo "My Personal Parameter" $my_personal_parameter
+      export imageVersion=0.0.7
+    onFailure:
+      - type: Command
+        timeoutInSeconds: 40
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 400
+        runAs: root
+  - type: Command
+    name: "Install Terraform"
+    timeoutInSeconds: 40
+    command: |
+      wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+      unzip *.zip
+      mv terraform ~/bin
+      terraform -version
+      wget https://releases.hashicorp.com/terraform-provider-oci/4.53.0/terraform-provider-oci_4.53.0_linux_amd64.zip
+      unzip terraform-provider-oci_4.53.0_linux_amd64.zip
+      mv terraform-provider-oci_v4.53.0_x4 ~/bin
+      ls -l ~/bin
+    onFailure:
+      - type: Command
+        timeoutInSeconds: 40
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 400
+        runAs: root
+
+  - type: Command
+    timeoutInSeconds: 600
+    name: "Install Prereqs"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/${FUNCTION_DIRECTORY}
+      echo go install NVM
+      pwd
+      # install nvm
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+      export NVM_DIR="$HOME/.nvm"
+      [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+      nvm install lts/erbium
+      echo "NODE VERSION: $(node -v)"
+      echo "NPM VERSION: $(npm -v)"
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
+        runAs: root
+  
+  - type: Command
+    timeoutInSeconds: 600
+    name: "NPM install"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/${FUNCTION_DIRECTORY}
+      npm install
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
+        runAs: root
+
+  - type: Command
+    timeoutInSeconds: 1200
+    name: "Build Function into container image"
+    command: |
+      cd ${OCI_WORKSPACE_DIR}/${FUNCTION_DIRECTORY}
+      fn build --verbose
+      image=$(docker images | grep tweet_retriever | awk -F ' ' '{print $3}') ; docker tag $image tweet_retriever_function_image    
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+
+        timeoutInSeconds: 40
+        runAs: root
+
+
+outputArtifacts:
+  - name: output01
+    type: DOCKER_IMAGE
+    # this location tag doesn't effect the tag used to deliver the container image
+    # to the Container Registry
+    location: tweet_retriever_function_image:latest
