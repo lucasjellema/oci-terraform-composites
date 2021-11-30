@@ -63,7 +63,7 @@ steps:
     timeoutInSeconds: 600
     name: "Perform Smoketest using Terraform"
     command: |
-      TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
+      export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
       cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
       terraform init
       terraform apply -auto-approve 
