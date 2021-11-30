@@ -28,8 +28,6 @@ steps:
       echo "BUILDRUN_HASH: " $BUILDRUN_HASH
       echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
       echo "imageVersion: " $imageVersion
-      echo "My Personal Parameter" $my_personal_parameter
-      export imageVersion=0.0.7
     onFailure:
       - type: Command
         timeoutInSeconds: 40
@@ -38,27 +36,7 @@ steps:
           echo "Failure successfully handled"
         timeoutInSeconds: 400
         runAs: root
-  - type: Command
-    name: "Install Terraform"
-    timeoutInSeconds: 40
-    command: |
-      wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
-      unzip *.zip
-      mv terraform ~/bin
-      terraform -version
-      wget https://releases.hashicorp.com/terraform-provider-oci/4.53.0/terraform-provider-oci_4.53.0_linux_amd64.zip
-      unzip terraform-provider-oci_4.53.0_linux_amd64.zip
-      mv terraform-provider-oci_v4.53.0_x4 ~/bin
-      ls -l ~/bin
-    onFailure:
-      - type: Command
-        timeoutInSeconds: 40
-        command: |
-          echo "Handling Failure"
-          echo "Failure successfully handled"
-        timeoutInSeconds: 400
-        runAs: root
-
+ 
   - type: Command
     timeoutInSeconds: 600
     name: "Install Prereqs"
