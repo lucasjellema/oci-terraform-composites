@@ -25,6 +25,7 @@ steps:
       echo "BUILDRUN_HASH: " $BUILDRUN_HASH
       echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
       echo "imageVersion: " $imageVersion
+      echo "Output from latest version of build_spec.yaml"
     onFailure:
       - type: Command
         timeoutInSeconds: 40
