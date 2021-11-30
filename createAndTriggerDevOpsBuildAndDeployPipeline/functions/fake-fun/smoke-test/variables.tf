@@ -1,0 +1,2 @@
+variable tenancy_ocid {
+}
