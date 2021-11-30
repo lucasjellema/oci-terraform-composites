@@ -101,7 +101,7 @@ steps:
     command: |
       cd ${OCI_WORKSPACE_DIR}/${FUNCTION_DIRECTORY}
       fn build --verbose
-      image=$(docker images | grep tweet_retriever | awk -F ' ' '{print $3}') ; docker tag $image tweet_retriever_function_image    
+      image=$(docker images | grep fake-fun | awk -F ' ' '{print $3}') ; docker tag $image new_function_image    
     onFailure:
       - type: Command
         command: |
@@ -117,4 +117,4 @@ outputArtifacts:
     type: DOCKER_IMAGE
     # this location tag doesn't effect the tag used to deliver the container image
     # to the Container Registry
-    location: tweet_retriever_function_image:latest
+    location: new_function_image:latest
