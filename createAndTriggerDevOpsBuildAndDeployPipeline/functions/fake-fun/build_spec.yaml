@@ -25,14 +25,7 @@ steps:
       echo "BUILDRUN_HASH: " $BUILDRUN_HASH
       echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
       echo "imageVersion: " $imageVersion
-      echo "Output from latest version of build_spec.yaml"
-      echo $OCI_CLI_KEY_FILE
-      echo $OCI_CLI_KEY_CONTENT
-      echo $OCI_CLI_TENANCY
-      echo $OCI_CLI_CONFIG_FILE
-      echo $OCI_CLI_CERT_BUNDLE
-      echo $OCI_CLI_SECURITY_TOKEN_FILE
-      ls -l ~/.oci
+
     onFailure:
       - type: Command
         timeoutInSeconds: 40
