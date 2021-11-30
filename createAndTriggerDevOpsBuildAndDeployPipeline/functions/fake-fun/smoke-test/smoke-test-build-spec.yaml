@@ -43,14 +43,14 @@ steps:
     name: "Install Terraform"
     timeoutInSeconds: 40
     command: |
-      wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
-      unzip *.zip
-      mv terraform ~/bin
-      terraform -version
-      wget https://releases.hashicorp.com/terraform-provider-oci/4.53.0/terraform-provider-oci_4.53.0_linux_amd64.zip
-      unzip terraform-provider-oci_4.53.0_linux_amd64.zip
-      mv terraform-provider-oci_v4.53.0_x4 ~/bin
-      ls -l ~/bin
+     # wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+     # unzip *.zip
+     # mv terraform ~/bin
+     # terraform -version
+     # wget https://releases.hashicorp.com/terraform-provider-oci/4.53.0/terraform-provider-oci_4.53.0_linux_amd64.zip
+     ## unzip terraform-provider-oci_4.53.0_linux_amd64.zip
+     # mv terraform-provider-oci_v4.53.0_x4 ~/bin
+     # ls -l ~/bin
     onFailure:
       - type: Command
         timeoutInSeconds: 40
@@ -63,7 +63,7 @@ steps:
     timeoutInSeconds: 600
     name: "Perform Smoketest using Terraform"
     command: |
-      export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
+      # export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
       cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
       apps=$(oci fn application list -c $compartmentOCID)
       appId=$(echo $apps | jq --raw-output .data[0].id)
