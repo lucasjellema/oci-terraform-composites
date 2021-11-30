@@ -11,7 +11,7 @@ data "oci_identity_regions" "home_region" {
 }
 
 output "tenancy_details" {
-  result = oci_identity_regions.home_region
+  value = data.oci_identity_regions.home_region
 }
 
 data "oci_identity_tenancy" "oci_tenancy" {
