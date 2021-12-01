@@ -18,7 +18,7 @@ env:
 
 steps:
   - type: Command
-    name: "Export variables"
+    name: "Install jq and Call Function"
     timeoutInSeconds: 40
     command: |
       export BUILDRUN_HASH=`echo ${OCI_BUILD_RUN_ID} | rev | cut -c 1-7`
@@ -28,12 +28,14 @@ steps:
       echo "compartmentOCID: " $compartmentOCID
       yum install epel-release -y
       yum install jq -y
+      echo "list of function applications in compartment"
+      oci fn application list -c $compartmentOCID
       apps=$(oci fn application list -c $compartmentOCID)
       appId=$(echo $apps | jq --raw-output .data[0].id)
       funs=$(oci fn function list --application-id $appId --display-name "my-new-function")
       funId=$(echo $funs | jq --raw-output .data[0].id)
       echo "Invoking the Function prior to Build and Redeploy" 
-      oci fn function invoke --function-id $funId --file "-"  --body '{"name":"John"}'
+      oci fn function invoke --function-id $funId --file "-"  --body '{"name":"Lisa"}'
     onFailure:
       - type: Command
         timeoutInSeconds: 40
