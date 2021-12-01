@@ -103,11 +103,14 @@ steps:
     name: "Perform Smoketest using Terraform"
     command: |
       echo "Apply Terraform Plan"
+      oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]"
       export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
       export TF_VAR_region="us-ashburn-1"
       echo "tenancy ocid" $TF_VAR_tenancy_ocid
       echo "region" $TF_VAR_region
       cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
+      export TF_VAR_tenancy_ocid=ocid1.tenancy.oc1..aaaaaaaag7c7slwmlvsodyym662ixlsonnihko2igwpjwwe2egmlf3gg6okq
+      echo "tenancy ocid" $TF_VAR_tenancy_ocid
       terraform init
       terraform apply -auto-approve 
     onFailure:
