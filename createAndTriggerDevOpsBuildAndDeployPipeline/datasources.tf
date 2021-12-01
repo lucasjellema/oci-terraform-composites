@@ -5,8 +5,15 @@ data "oci_functions_applications" "function_applications" {
   display_name   = "${var.application_name}"
 }
 
+
+data "oci_functions_functions" "application_functions" {
+    application_id = local.application_id
+    display_name = var.function_name
+}
+
 locals {
   application_id = data.oci_functions_applications.function_applications.applications[0].id
+  function_id = data.oci_functions_functions.application_functions.functions[0].id
 }
 
 
@@ -65,7 +72,7 @@ data "oci_identity_regions" "oci_regions" {
 }
 
 data "oci_identity_tenancy" "oci_tenancy" {
- # tenancy_id = var.tenancy_ocid
+  tenancy_id = var.tenancy_ocid
 }
 
 data "oci_objectstorage_namespace" "os_namespace" {

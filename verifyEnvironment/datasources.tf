@@ -14,9 +14,6 @@ output "tenancy_details" {
   value = data.oci_identity_regions.home_region
 }
 
-data "oci_identity_tenancy" "oci_tenancy" {
-  tenancy_id = var.tenancy_ocid
-}
 
 
 

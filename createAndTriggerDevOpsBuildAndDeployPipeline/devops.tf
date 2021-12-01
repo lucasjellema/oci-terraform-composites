@@ -12,7 +12,7 @@
 # }
 
 resource "oci_devops_build_run" "trigger_build_pipeline_for_new-function" {
-  depends_on         = [oci_devops_deploy_stage.cloudnative2021_new-function_deploy_stage, oci_devops_build_pipeline_stage build-stage-smoketest-new-app-function-container-image]
+  depends_on         = [oci_devops_deploy_stage.cloudnative2021_new-function_deploy_stage, oci_devops_build_pipeline_stage.build-stage-smoketest-new-app-function-container-image]
   build_pipeline_id = oci_devops_build_pipeline.cloudnative2021_buildpipeline_new-app-function.id
   build_run_arguments {
         items {
