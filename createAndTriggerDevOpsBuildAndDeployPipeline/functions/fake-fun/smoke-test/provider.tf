@@ -17,5 +17,7 @@ terraform {
   }
 }
 
-provider oci {
+provider "oci" {
+   auth = "InstancePrincipal"
+   region = "${var.region}"
 }
