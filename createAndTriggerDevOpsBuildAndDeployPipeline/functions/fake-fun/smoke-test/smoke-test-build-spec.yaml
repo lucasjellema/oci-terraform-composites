@@ -88,8 +88,7 @@ steps:
       appId=$(echo $apps | jq --raw-output .data[0].id)
       funs=$(oci fn function list --application-id $appId --display-name "my-new-function")
       funId=$(echo $funs | jq --raw-output .data[0].id)
-      echo $funId
-      oci fn function invoke --function-id ocid1.fnfunc.oc1.iad.aaaaaaaap74mp2ms7abmfbqfbseivntj5qlvt3b3xxjpodof46hyt4l6yd6q      --file "-"  --body '{"name":"John"}'
+      echo "Invoking function after Build and Redeployment"
       oci fn function invoke --function-id $funId --file "-"  --body '{"name":"John"}'
 
       #terraform init
