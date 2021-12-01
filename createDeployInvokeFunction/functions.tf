@@ -7,7 +7,6 @@ resource "oci_artifacts_container_repository" "container_repository_for_function
     is_public = false
 }
 
-
 resource "null_resource" "Login2OCIR" {
   depends_on = [ oci_artifacts_container_repository.container_repository_for_function]
 

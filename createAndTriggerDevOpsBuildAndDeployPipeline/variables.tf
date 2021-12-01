@@ -8,6 +8,12 @@ variable ocir_user_password {
     }
 
 
+# DEVOPS
+variable devops_project_name { default = "define the name of the DevOps project"}
+variable devops_code_repository_name { default = "define the name of the DevOps Code Repository associated with the Build Pipeline"}
+
+
+## Function
 variable application_name {
   default = "cloudnative-2021App"
 }
@@ -21,10 +27,12 @@ variable "test_invoke_function_body"  {
 } 
 
 # OCIR repo name & namespace
+variable "ocir_repo_name" {
+  default = "cloudnative-2021/functions"
+}
+
 
 locals {
-  app_name_lower = lower(var.application_name)
-  ocir_repo_name = "cloudnative-2021/functions"  
   ocir_docker_repository = join("", [lower(lookup(data.oci_identity_regions.oci_regions.regions[0], "key")), ".ocir.io"])
   ocir_namespace         = lookup(data.oci_objectstorage_namespace.os_namespace, "namespace")
 }
