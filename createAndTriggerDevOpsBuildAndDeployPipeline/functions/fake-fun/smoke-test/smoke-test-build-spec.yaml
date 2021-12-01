@@ -31,8 +31,8 @@ steps:
       echo "imageVersion: " $imageVersion
       echo "compartmentOCID: " $compartmentOCID
       # show all environment variables (to explore how OCI CLI is configured)
-      env
-      oci -version       
+      # env
+      # oci -version       
 
     onFailure:
       - type: Command
@@ -46,14 +46,14 @@ steps:
     name: "N/A (Install Terraform)"
     timeoutInSeconds: 40
     command: |
-     # wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
-     # unzip *.zip
-     # mv terraform ~/bin
-     # terraform -version
-     # wget https://releases.hashicorp.com/terraform-provider-oci/4.53.0/terraform-provider-oci_4.53.0_linux_amd64.zip
-     ## unzip terraform-provider-oci_4.53.0_linux_amd64.zip
-     # mv terraform-provider-oci_v4.53.0_x4 ~/bin
-     # ls -l ~/bin
+      wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+      unzip *.zip
+      mv terraform ~/bin
+      terraform -version
+      wget https://releases.hashicorp.com/terraform-provider-oci/4.53.0/terraform-provider-oci_4.53.0_linux_amd64.zip
+      unzip terraform-provider-oci_4.53.0_linux_amd64.zip
+      mv terraform-provider-oci_v4.53.0_x4 ~/bin
+      ls -l ~/bin
     onFailure:
       - type: Command
         timeoutInSeconds: 40
@@ -82,8 +82,6 @@ steps:
     timeoutInSeconds: 600
     name: "Perform Smoketest using OCI CLI (call function)"
     command: |
-      # export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
-      cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
       apps=$(oci fn application list -c $compartmentOCID)
       appId=$(echo $apps | jq --raw-output .data[0].id)
       funs=$(oci fn function list --application-id $appId --display-name "my-new-function")
@@ -99,5 +97,23 @@ steps:
           echo "Handling Failure"
           echo "Failure successfully handled"
         timeoutInSeconds: 40
+
+  - type: Command
+    timeoutInSeconds: 600
+    name: "Perform Smoketest using Terraform"
+    command: |
+      echo "Apply Terraform Plan"
+      export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
+      export TF_VAR_region="us-ashburn-1"
+      cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
+      terraform init
+      terraform apply -auto-approve 
+    onFailure:
+      - type: Command
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 40
   
+        
 outputArtifacts:
