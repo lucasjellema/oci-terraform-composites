@@ -32,6 +32,7 @@ steps:
       echo "compartmentOCID: " $compartmentOCID
       # show all environment variables (to explore how OCI CLI is configured)
       env
+      oci -version       
 
     onFailure:
       - type: Command
@@ -62,6 +63,22 @@ steps:
         timeoutInSeconds: 400
 
   - type: Command
+    name: "Install jq"
+    timeoutInSeconds: 40
+    command: |
+      yum install epel-release -y
+      yum install jq -y
+      jq -Version
+      
+    onFailure:
+      - type: Command
+        timeoutInSeconds: 40
+        command: |
+          echo "Handling Failure"
+          echo "Failure successfully handled"
+        timeoutInSeconds: 400
+
+  - type: Command
     timeoutInSeconds: 600
     name: "Perform Smoketest using OCI CLI (call function)"
     command: |
@@ -72,9 +89,11 @@ steps:
       funs=$(oci fn function list --application-id $appId --display-name "my-new-function")
       funId=$(echo $funs | jq --raw-output .data[0].id)
       echo $funId
+      oci fn function invoke --function-id ocid1.fnfunc.oc1.iad.aaaaaaaap74mp2ms7abmfbqfbseivntj5qlvt3b3xxjpodof46hyt4l6yd6q      --file "-"  --body '{"name":"John"}'
       oci fn function invoke --function-id $funId --file "-"  --body '{"name":"John"}'
-      terraform init
-      terraform apply -auto-approve 
+
+      #terraform init
+      #terraform apply -auto-approve 
     onFailure:
       - type: Command
         command: |
