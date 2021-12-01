@@ -1,6 +1,10 @@
 output "tenancy_ocid" {
   value = var.tenancy_ocid
 }
+output "region" {
+  value = var.region
+}
+
 output "tenancy" {
   value = data.oci_identity_tenancy.oci_tenancy
 }
