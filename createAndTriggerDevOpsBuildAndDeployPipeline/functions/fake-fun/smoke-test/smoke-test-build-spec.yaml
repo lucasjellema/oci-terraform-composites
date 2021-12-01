@@ -30,6 +30,8 @@ steps:
       echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
       echo "imageVersion: " $imageVersion
       echo "compartmentOCID: " $compartmentOCID
+      # show all environment variables (to explore how OCI CLI is configured)
+      env
 
     onFailure:
       - type: Command
@@ -40,7 +42,7 @@ steps:
         timeoutInSeconds: 400
         runAs: root
   - type: Command
-    name: "Install Terraform"
+    name: "N/A (Install Terraform)"
     timeoutInSeconds: 40
     command: |
      # wget https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
@@ -61,7 +63,7 @@ steps:
 
   - type: Command
     timeoutInSeconds: 600
-    name: "Perform Smoketest using Terraform"
+    name: "Perform Smoketest using OCI CLI (call function)"
     command: |
       # export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
       cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
