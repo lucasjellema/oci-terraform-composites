@@ -25,7 +25,15 @@ steps:
       echo "BUILDRUN_HASH: " $BUILDRUN_HASH
       echo "FUNCTION-DIRECTORY: " $FUNCTION_DIRECTORY
       echo "imageVersion: " $imageVersion
-
+      yum install epel-release -y
+      yum install jq -y
+      jq -Version
+      apps=$(oci fn application list -c $compartmentOCID)
+      appId=$(echo $apps | jq --raw-output .data[0].id)
+      funs=$(oci fn function list --application-id $appId --display-name "my-new-function")
+      funId=$(echo $funs | jq --raw-output .data[0].id)
+      echo $funId
+      oci fn function invoke --function-id $funId --file "-"  --body '{"name":"John"}'
     onFailure:
       - type: Command
         timeoutInSeconds: 40
