@@ -9,7 +9,9 @@ data "oci_identity_regions" "home_region" {
     values = [data.oci_identity_tenancy.tenant_details.home_region_key]
   }
 }
-
+output "tenancy_ocid" {
+  value = var.tenancy_ocid
+}
 output "tenancy_details" {
   value = data.oci_identity_regions.home_region
 }

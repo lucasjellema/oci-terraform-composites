@@ -105,6 +105,8 @@ steps:
       echo "Apply Terraform Plan"
       export TF_VAR_tenancy_ocid=$(oci iam compartment list --all --compartment-id-in-subtree true --access-level ACCESSIBLE --include-root --raw-output --query "data[?contains(\"id\",'tenancy')].id | [0]")
       export TF_VAR_region="us-ashburn-1"
+      echo "tenancy ocid" $TF_VAR_tenancy_ocid
+      echo "region" $TF_VAR_region
       cd ${OCI_WORKSPACE_DIR}/${SMOKE_TEST_DIRECTORY}
       terraform init
       terraform apply -auto-approve 
