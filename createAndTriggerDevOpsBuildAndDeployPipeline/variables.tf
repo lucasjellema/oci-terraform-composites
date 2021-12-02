@@ -11,7 +11,7 @@ variable ocir_user_password {
 # DEVOPS
 variable devops_project_name { default = "define the name of the DevOps project"}
 variable devops_code_repository_name { default = "define the name of the DevOps Code Repository associated with the Build Pipeline"}
-
+variable github_repository_url  { default = "https://github.com/lucasjellema/oci-terraform-composites"} 
 
 ## Function
 variable application_name {
@@ -21,10 +21,6 @@ variable application_name {
 variable "function_name" {
   default = "my-new-function"
 }
-
-variable "test_invoke_function_body"  {
-  default = "{\"name\": \"Brave New World\"}"
-} 
 
 # OCIR repo name & namespace
 variable "ocir_repo_name" {

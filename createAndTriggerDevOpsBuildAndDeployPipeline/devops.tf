@@ -57,8 +57,7 @@ resource oci_devops_build_pipeline_stage build-stage-new-app-function-container-
       connection_id = "ocid1.devopsconnection.oc1.iad.amaaaaaa6sde7caaujhp3cqqnbk5sxkgufb3ynz6mz6y4gghtmsvz434jhzq"
       connection_type = "GITHUB"
       name            = "primary_source"
-      #repository_id   = local.devops_repository_id
-      repository_url  = "https://github.com/lucasjellema/oci-terraform-composites"
+      repository_url  = var.github_repository_url
     }
   }
   build_spec_file = "/createAndTriggerDevOpsBuildAndDeployPipeline/functions/fake-fun/build_spec.yaml"
@@ -118,8 +117,7 @@ resource oci_devops_build_pipeline_stage build-stage-smoketest-new-app-function-
       connection_id = "ocid1.devopsconnection.oc1.iad.amaaaaaa6sde7caaujhp3cqqnbk5sxkgufb3ynz6mz6y4gghtmsvz434jhzq"
       connection_type = "GITHUB"
       name            = "primary_source"
-      #repository_id   = local.devops_repository_id
-      repository_url  = "https://github.com/lucasjellema/oci-terraform-composites"
+      repository_url  = var.github_repository_url
     }
   }
   build_spec_file = "/createAndTriggerDevOpsBuildAndDeployPipeline/functions/fake-fun/smoke-test/smoke-test-build-spec.yaml"
@@ -128,31 +126,6 @@ resource oci_devops_build_pipeline_stage build-stage-smoketest-new-app-function-
   image = "OL7_X86_64_STANDARD_10"
   primary_build_source               = "primary_source"
   stage_execution_timeout_in_seconds = "36000"
-}
-
-
-
-### trigger build pipeline from commit/push in code Repository
-
-resource oci_devops_trigger coderepos_trigger-new-app-function-build {
-  actions {
-    build_pipeline_id = oci_devops_build_pipeline.cloudnative2021_buildpipeline_new-app-function.id
-    filter {
-      events = [
-        "PUSH",
-      ]
-      #include = <<Optional value not found in discovery>>
-      trigger_source = "DEVOPS_CODE_REPOSITORY"
-    }
-    type = "TRIGGER_BUILD_PIPELINE"
-  }
-
-  description  = ""
-  display_name = "trigger-new-app-function-build"
-
-  project_id     = local.devops_project_id
-  repository_id  = local.devops_repository_id
-  trigger_source = "DEVOPS_CODE_REPOSITORY"
 }
 
 

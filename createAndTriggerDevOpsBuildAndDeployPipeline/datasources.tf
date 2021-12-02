@@ -16,6 +16,9 @@ locals {
   function_id = data.oci_functions_functions.application_functions.functions[0].id
 }
 
+output "function_looking_for_repoURL" {
+  value = data.oci_functions_functions.application_functions.functions[0]
+}
 
 # devops
 
@@ -24,25 +27,12 @@ data "oci_devops_projects" "current_devops_projects" {
     name = "${var.devops_project_name}" 
 }
 
-data "oci_devops_repositories" "project_repositories" {
-    compartment_id = var.compartment_ocid
-    name = "${var.devops_code_repository_name}"
-}
-
-
-
 locals {
   devops_project_id = data.oci_devops_projects.current_devops_projects.project_collection[0].items[0].id
-  devops_repository_id = data.oci_devops_repositories.project_repositories.repository_collection[0].items[0].id
-  devops_repository_url = data.oci_devops_repositories.project_repositories.repository_collection
 }
 
 output "devops_project_id" {
   value = "${local.devops_project_id}"
-}
-
-output "devops_repo_id" {
-  value = "${local.devops_repository_id}"
 }
 
 output "fn_application_id" {

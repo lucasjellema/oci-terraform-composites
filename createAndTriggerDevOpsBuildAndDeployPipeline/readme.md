@@ -9,4 +9,6 @@ The assumptions/prerequisites:
 * a DevOps project already exists and its name is specified in variables.tf; its contains an external connection to a GitHub repository and its URL is also defined in variables.tf. 
 * This pipeline builds and deploys a Function. This function already exists - as does the repository in the Container Image Registry. The names of the function and its application as well as the name of the container image repository are defined in the variables.tf file. Note: these resources can be produced using the OCI Terraform Composite *createDeployInvokeFunction*
 * the user applying the Terraform plan has the required permissions to create the DevOps resources 
-* the Build Pipeline is in an IAM Dynamic Group that through a policy has permission to read the secret containing the personal access token for GitHub from the Vault
+
+This diagram shows in green the resources that are created and in blue the resources that should exist ahead of creating the composite.
+![](.resources/oci-resources-overview.png)
