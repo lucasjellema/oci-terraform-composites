@@ -22,8 +22,9 @@ variable "function_name" {
   default = "my-new-function"
 }
 
-# OCIR repo name & namespace
-variable "ocir_repo_name" {
+# OCIR repo path - container image repository path in OCI Container Registry (everything before the function_name:image version)
+# the final image path is constructed as: region specific image repository url/namespace/repo path/function-name:imageversion
+variable "ocir_repo_path" {
   default = "cloudnative-2021/functions"
 }
 

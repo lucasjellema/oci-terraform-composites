@@ -16,6 +16,7 @@ locals {
   function_id = data.oci_functions_functions.application_functions.functions[0].id
 }
 
+# image              = "iad.ocir.io/idtwlqf2hanz/cloudnative-2021/functions/my-new-function:0.0.4"
 output "function_looking_for_repoURL" {
   value = data.oci_functions_functions.application_functions.functions[0]
 }
