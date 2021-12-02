@@ -14,3 +14,5 @@ The assumptions/prerequisites:
 
 This diagram shows in green the resources that are created and in blue the resources that should exist ahead of creating the composite.
 ![](.resources/oci-composite-overview.png)
+
+Some details are in my blog article about this composite: [blog article](https://technology.amis.nl/tech/oci-devops-composite-creating-build-deploy-pipeline-resources-using-terraform-plans/)
